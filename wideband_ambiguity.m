@@ -27,7 +27,7 @@ T = length(tx_signal) / fs;                    % 脉冲长度
 sample_num = 3 * length(tx_signal);           % 设置RDM的samples数目为发射信号的三倍
 tx_paddle = [zeros(1, length(tx_signal)), tx_signal, zeros(1, length(tx_signal))];
 
-vel_resolution = 0.1;                         % 速度bin
+vel_resolution = 0.05;                         % 速度bin
 
 delta_T = 1/fs;
 range_resolution = c * delta_T / 2;                 % 距离分辨率,由脉宽决定：delta r = c*T/2
@@ -72,8 +72,8 @@ RDM = zeros(sample_num, length(vel_axis));    % 初始化RDM矩阵
 
 for i = 1:length(vel_axis)
     % 使用conv函数进行卷积，'same'模式保持与接收信号同样长度
-    conv_result = conv(templates(i, :), rx_signal, 'same');
-    
+    %conv_result = conv(templates(i, :), rx_signal, 'same');
+    conv_result = improved_conv_same(templates(i, :), rx_signal);
     % 如果卷积结果长度与sample_num不匹配，进行调整
     if length(conv_result) > sample_num
         % 截断到中心部分
